@@ -11,14 +11,27 @@
           </p>
           <div class="detail">
             <p>创建人：<span>曲丽丽</span></p>
-            <p>创建时间：<span>2016-06-16  14:03</span></p>
-            <p>生效日期：<span>2016-06-16  14:03</span></p>
+            <p>创建时间：<span>2016-06-16 14:03</span></p>
+            <p>生效日期：<span>2016-06-16 14:03</span></p>
           </div>
         </div>
-        <div class="box_r">2</div>
+        <div class="box_r">
+          <div class="txt">
+            <p class="p1">源系统</p>
+            <p class="p2"><span>25</span>个</p>
+          </div>
+          <div class="txt">
+            <p class="p1">基础变量数</p>
+            <p class="p2"><span>10,000</span>个</p>
+          </div>
+          <div class="txt">
+            <p class="p1">衍生变量数</p>
+            <p class="p2"><span>10,000</span>个</p>
+          </div>
+        </div>
       </div>
     </el-container>
-    <div class="filter-container">
+    <div class="filter-container top">
       <el-input
         v-model="listQuery.title"
         placeholder="标题"
@@ -104,110 +117,89 @@
         审核人
       </el-checkbox>
     </div>
-
-    <el-table
-      :key="tableKey"
-      v-loading="listLoading"
-      :data="list"
-      border
-      fit
-      highlight-current-row
-      style="width: 100%"
-      @sort-change="sortChange"
-    >
-      <el-table-column label="变量名称" width="150px" align="center">
-        <template slot-scope="{ row }">
-          <span>{{ row.timestamp }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="状态" min-width="150px">
-        <template slot-scope="{ row }">
-          <span class="link-type" @click="handleUpdate(row)">{{
-            row.title
-          }}</span>
-          <el-tag>{{ row.type | typeFilter }}</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="数据来源" width="110px" align="center">
-        <template slot-scope="{ row }">
-          <span>{{ row.author }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        v-if="showReviewer"
-        label="重要性"
-        width="110px"
-        align="center"
+    <div class="filter-container">
+      <el-table
+        :key="tableKey"
+        v-loading="listLoading"
+        :data="list"
+        border
+        fit
+        highlight-current-row
+        style="width: 100%"
+        @sort-change="sortChange"
       >
-        <template slot-scope="{ row }">
-          <span style="color: red">{{ row.reviewer }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="阅读数" width="80px">
-        <template slot-scope="{ row }">
-          <svg-icon
-            v-for="n in +row.importance"
-            :key="n"
-            icon-class="star"
-            class="meta-item__icon"
-          />
-        </template>
-      </el-table-column>
-      <el-table-column label="状态" align="center" width="95">
-        <template slot-scope="{ row }">
-          <span
-            v-if="row.pageviews"
-            class="link-type"
-            @click="handleFetchPv(row.pageviews)"
-            >{{ row.pageviews }}</span
-          >
-          <span v-else>0</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" class-name="status-col" width="100">
-        <template slot-scope="{ row }">
-          <el-tag :type="row.status | statusFilter">
-            {{ row.status }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column
-        label="操作"
-        align="center"
-        width="230"
-        class-name="small-padding fixed-width"
-      >
-        <template slot-scope="{ row }">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            编辑
-          </el-button>
-          <el-button
-            v-if="row.status != 'published'"
-            size="mini"
-            type="success"
-            @click="handleModifyStatus(row, 'published')"
-          >
-            发布
-          </el-button>
-          <el-button
-            v-if="row.status != 'draft'"
-            size="mini"
-            @click="handleModifyStatus(row, 'draft')"
-          >
-            草稿
-          </el-button>
-          <el-button
-            v-if="row.status != 'deleted'"
-            size="mini"
-            type="danger"
-            @click="handleModifyStatus(row, 'deleted')"
-          >
-            删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
+        <el-table-column label="变量名称" width="" align="center">
+          <template slot-scope="{ row }">
+            <span>{{ row.timestamp }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="状态" width="" align="center">
+          <template slot-scope="{ row }">
+            <span>{{ row.timestamp }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="数据来源" width="" align="center">
+          <template slot-scope="{ row }">
+            <span>{{ row.timestamp }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="统计维度" width="" align="center">
+          <template slot-scope="{ row }">
+            <span>{{ row.timestamp }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="更新人" width="" align="center">
+          <template slot-scope="{ row }">
+            <span>{{ row.timestamp }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="更新时间" width="" align="center">
+          <template slot-scope="{ row }">
+            <span>{{ row.timestamp }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="创建时间" width="" align="center">
+          <template slot-scope="{ row }">
+            <span>{{ row.timestamp }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="操作"
+          align="center"
+          width="230"
+          class-name="small-padding fixed-width"
+        >
+          <template slot-scope="{ row }">
+            <el-button type="primary" size="mini" @click="handleUpdate(row)">
+              编辑
+            </el-button>
+            <el-button
+              v-if="row.status != 'published'"
+              size="mini"
+              type="success"
+              @click="handleModifyStatus(row, 'published')"
+            >
+              发布
+            </el-button>
+            <el-button
+              v-if="row.status != 'draft'"
+              size="mini"
+              @click="handleModifyStatus(row, 'draft')"
+            >
+              草稿
+            </el-button>
+            <el-button
+              v-if="row.status != 'deleted'"
+              size="mini"
+              type="danger"
+              @click="handleModifyStatus(row, 'deleted')"
+            >
+              删除
+            </el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
     <pagination
       v-show="total > 0"
       :total="total"
@@ -573,26 +565,40 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
+.app-container {
+  padding: 0px;
+}
+.filter-container {
+  padding: 20px;
+  padding-top:0px;
+  background-color: #F0F2F5;
+  &.top{
+    padding-top:15px;
+  }
+}
 .jcBox {
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  padding: 20px;
+  // padding-bottom:10px;
+  // border-bottom: 1px solid #eee;
   .box_l {
     width: 65%;
     display: flex;
     flex-direction: column;
-    .detail{
+    .detail {
       display: flex;
       flex-direction: row;
       font-size: 12px;
-      color:#666;
-      padding-left:50px;
-      span{
-        color:#999;
+      color: #666;
+      padding-left: 50px;
+      span {
+        color: #999;
       }
-      p{
-        margin-right:80px;
+      p {
+        margin-right: 80px;
       }
     }
     h2 {
@@ -613,6 +619,24 @@ export default {
       height: 40px;
       position: absolute;
       left: 0px;
+    }
+  }
+  .box_r {
+    width: 30%;
+    display: flex;
+    flex-direction: row;
+    .txt {
+      width: 33.33%;
+      text-align: center;
+      margin-top: 15%;
+      color: #999;
+      font-size: 14px;
+      .p2 {
+        span {
+          font-size: 18px;
+          color: #333;
+        }
+      }
     }
   }
 }
