@@ -299,13 +299,8 @@ export default {
       });
     },
     handleUpdate(row) {
-      this.temp = Object.assign({}, row); // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp);
-      this.dialogStatus = "update";
-      this.dialogFormVisible = true;
-      this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
-      });
+      // this.temp = Object.assign({}, row); // copy obj
+      console.log(row)
     },
     handleDelete(row) {
       this.$notify({
