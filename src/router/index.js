@@ -71,7 +71,15 @@ export const constantRoutes = [{
       name: 'ComplexTable',
       meta: {
         title: '基础变量管理'
-      }
+      },
+    }, {
+      path: 'complex-table-detail',
+      component: () => import('@/views/table/complex-table-detail'),
+      name: 'ComplexTableDetail',
+      meta: {
+        title: '基础变量配置'
+      },
+      hidden: true
     }]
   },
   // 404 page must be placed at the end !!!

@@ -9,11 +9,11 @@
           <p class="text">
             基础变量是对数据进行初步加工生成的变量，这些变量可以再加工生成衍生变量，也可以直接映射成业务字段进行规则配置。
           </p>
-          <div class="detail">
+          <!-- <div class="detail">
             <p>创建人：<span>曲丽丽</span></p>
             <p>创建时间：<span>2016-06-16 14:03</span></p>
             <p>生效日期：<span>2016-06-16 14:03</span></p>
-          </div>
+          </div> -->
         </div>
         <div class="box_r">
           <div class="txt">
@@ -39,7 +39,7 @@
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
-      <el-select
+      <!-- <el-select
         v-model="listQuery.importance"
         placeholder="全部"
         clearable
@@ -52,7 +52,7 @@
           :label="item"
           :value="item"
         />
-      </el-select>
+      </el-select> -->
       <el-button
         v-waves
         class="filter-item"
@@ -136,7 +136,7 @@
               v-if="row.status != 'published'"
               size="mini"
               type="success"
-              @click="handleModifyStatus(row, 'published')"
+              
             >
               配置
             </el-button>
@@ -203,7 +203,7 @@ export default {
         type: undefined,
         sort: "+id",
       },
-      importanceOptions: ["全部", "一级", "二级", "三级"],
+      // importanceOptions: ["全部", "一级", "二级", "三级"],
       temp: {
         id: undefined,
         importance: 1,
@@ -258,6 +258,7 @@ export default {
           setTime: "2016-06-16  14:03",
         },
       ];
+      this.total = 3
       // fetchList(this.listQuery).then(response => {
       //   this.list = response.data.items
       //   this.total = response.data.total
@@ -300,7 +301,7 @@ export default {
     },
     handleUpdate(row) {
       // this.temp = Object.assign({}, row); // copy obj
-      console.log(row)
+      this.$router.push({ name:'ComplexTableDetail', query: { id: row.id }})
     },
     handleDelete(row) {
       this.$notify({
@@ -379,7 +380,7 @@ export default {
     .txt {
       width: 33.33%;
       text-align: center;
-      margin-top: 15%;
+      margin-top: 4%;
       color: #999;
       font-size: 14px;
       .p2 {
