@@ -33,7 +33,7 @@
         </el-steps>
       </div>
     </div>
-    <div class="filter-container">
+    <div class="filter-container" v-show="this.active == 0">
       <div class="titleBox"><h3>基本信息</h3></div>
       <div class="bzBox">
         <el-form
@@ -73,7 +73,7 @@
         </el-form>
       </div>
     </div>
-    <div class="filter-container">
+    <div class="filter-container" v-show="this.active == 0">
       <div class="titleBox"><h3>运行信息</h3></div>
       <div class="bzBox">
         <el-form
@@ -150,8 +150,59 @@
             </p>
           </el-form-item>
         </el-form>
-        <el-button style="margin-left:150px;margin-top: 12px" @click="pre">上一步</el-button>
-        <el-button style="margin-top: 12px" type="primary" @click="next"
+      </div>
+    </div>
+    <div class="filter-container" v-show="this.active == 1">
+      <div class="titleBox"><h3>规则配置器</h3></div>
+      <div class="pzBox">
+        <div class="boxLeft">
+          <div class="ssbox">
+            <el-input
+              size="mini"
+              placeholder="请输入"
+              prefix-icon="el-icon-search"
+              v-model="inputSS"
+            >
+            </el-input>
+          </div>
+          <div class="listbox">
+            <p class="title">字段列表：</p>
+            <ul>
+              <li>
+                <p>商户名称</p>
+                <i class="el-icon-circle-plus-outline"></i>
+              </li>
+              <li>
+                <p>商户状态</p>
+                <i class="el-icon-circle-plus-outline"></i>
+              </li>
+              <li>
+                <p>集团商户标志</p>
+                <i class="el-icon-circle-plus-outline"></i>
+              </li>
+              <li>
+                <p>法人证件号码</p>
+                <i class="el-icon-circle-plus-outline"></i>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="boxRight">1</div>
+      </div>
+    </div>
+    <div class="filter-container">
+      <div class="buttonBox">
+        <el-button
+          style="margin-left: 150px; margin-top: 12px"
+          @click="pre"
+          :disabled="this.active == 0"
+          >上一步</el-button
+        >
+        <el-button
+          style="margin-top: 12px"
+          type="primary"
+          @click="next"
+          :disabled="this.active == 2"
           >下一步</el-button
         >
       </div>
@@ -182,7 +233,8 @@ export default {
   },
   data() {
     return {
-      active: 0,
+      active: 1,
+      inputSS: "", //配置器搜索
       temp: {
         id: undefined,
         name: "",
@@ -288,6 +340,10 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
+.buttonBox {
+  width: 450px;
+  margin: 0px auto;
+}
 .intro {
   margin-bottom: 0px;
   font-size: 12px;
@@ -302,6 +358,61 @@ export default {
   width: 100%;
   padding: 20px 30%;
   background-color: #fff;
+}
+.pzBox {
+  width: 100%;
+  min-height: 500px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: row;
+  .boxLeft {
+    width: 25%;
+    border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    .ssbox {
+      width: 90%;
+      margin: 10px auto;
+    }
+    .listbox {
+      width: 95%;
+      margin: 0px auto;
+      // background-color: #F0F2F5;
+      .title{
+        font-size:12px;
+        padding:0px 8px;
+        color:#666;
+        margin-top:0px;
+      }
+      ul {
+        margin: 0px;
+        padding: 0px;
+        li {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          font-size: 14px;
+          border-radius: 2px;
+          color: #666;
+          list-style-type: none;
+          padding: 10px;
+          padding-left: 15px;
+          margin: 5px;
+          box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+          background-color: #fffdf4;
+          i{
+            cursor: pointer;
+          }
+          p{
+            margin:0px;
+          }
+        }
+      }
+    }
+  }
+  .boxRight {
+    width: 75%;
+  }
 }
 .app-container {
   padding: 0px;
