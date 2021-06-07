@@ -168,20 +168,8 @@
           <div class="listbox">
             <p class="title">字段列表：</p>
             <ul>
-              <li>
-                <p>商户名称</p>
-                <i class="el-icon-circle-plus-outline"></i>
-              </li>
-              <li>
-                <p>商户状态</p>
-                <i class="el-icon-circle-plus-outline"></i>
-              </li>
-              <li>
-                <p>集团商户标志</p>
-                <i class="el-icon-circle-plus-outline"></i>
-              </li>
-              <li>
-                <p>法人证件号码</p>
+              <li v-for="item in this.zdList">
+                <p>{{item.name}}</p>
                 <i class="el-icon-circle-plus-outline"></i>
               </li>
             </ul>
@@ -247,6 +235,20 @@ export default {
         time: "",
       },
       varType: ["客户信息", "商户信息", "终端信息"],
+      zdList: [
+        {
+          name: "商户名称",
+        },
+        {
+          name: "商户状态",
+        },
+        {
+          name: "集团商户标志",
+        },
+        {
+          name: "法人证件号码",
+        },
+      ], //字段列表
       dimensionList: [
         {
           value: "选项1",
@@ -378,11 +380,11 @@ export default {
       width: 95%;
       margin: 0px auto;
       // background-color: #F0F2F5;
-      .title{
-        font-size:12px;
-        padding:0px 8px;
-        color:#666;
-        margin-top:0px;
+      .title {
+        font-size: 12px;
+        padding: 0px 8px;
+        color: #666;
+        margin-top: 0px;
       }
       ul {
         margin: 0px;
@@ -400,11 +402,14 @@ export default {
           margin: 5px;
           box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
           background-color: #fffdf4;
-          i{
+          &:hover {
+            box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
+          }
+          i {
             cursor: pointer;
           }
-          p{
-            margin:0px;
+          p {
+            margin: 0px;
           }
         }
       }
