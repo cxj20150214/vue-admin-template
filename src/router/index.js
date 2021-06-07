@@ -62,7 +62,7 @@ export const constantRoutes = [{
     redirect: '/table/complex-table',
     name: 'Table',
     meta: {
-      title: '',
+      title: '基础变量',
       icon: 'table'
     },
     children: [{
@@ -70,14 +70,15 @@ export const constantRoutes = [{
       component: () => import('@/views/table/complex-table'),
       name: 'ComplexTable',
       meta: {
-        title: '基础变量管理'
-      },
+        title: '基础变量管理',
+        icon: 'table'
+      }
     }, {
       path: 'complex-table-detail',
       component: () => import('@/views/table/complex-table-detail'),
       name: 'ComplexTableDetail',
       meta: {
-        title: '基础变量配置'
+        title: '基础变量详情'
       },
       hidden: true
     }]

@@ -94,7 +94,9 @@
         </el-table-column>
         <el-table-column label="状态" width="80px" align="center">
           <template slot-scope="{ row }">
-            <span>{{ row.state }}</span>
+            <el-tag :type="row.state">
+              {{ row.stateName }}
+            </el-tag>
           </template>
         </el-table-column>
         <el-table-column label="数据来源" width="" align="center">
@@ -136,7 +138,6 @@
               v-if="row.status != 'published'"
               size="mini"
               type="success"
-              
             >
               配置
             </el-button>
@@ -176,19 +177,6 @@ export default {
   name: "ComplexTable",
   components: { Pagination },
   directives: { waves },
-  filters: {
-    statusFilter(status) {
-      const statusMap = {
-        published: "success",
-        draft: "info",
-        deleted: "danger",
-      };
-      return statusMap[status];
-    },
-    typeFilter(type) {
-      return calendarTypeKeyValue[type];
-    },
-  },
   data() {
     return {
       tableKey: 0,
@@ -230,7 +218,8 @@ export default {
         {
           id: 1,
           name: "客户类型",
-          state: "定义中",
+          stateName: "定义中",
+          state:"success",
           sources: "商户注册资料表",
           dimension: "平台客户编号",
           update: "陈象江",
@@ -240,7 +229,8 @@ export default {
         {
           id: 2,
           name: "设备线路状况类型",
-          state: "定义中",
+          stateName: "定义中",
+          state:"success",
           sources: "商户注册资料表",
           dimension: "平台客户编号",
           update: "陈象江",
@@ -250,7 +240,8 @@ export default {
         {
           id: 4,
           name: "商户状态",
-          state: "定义中",
+          stateName: "定义中",
+          state:"success",
           sources: "商户注册资料表",
           dimension: "平台客户编号",
           update: "陈象江",
@@ -258,7 +249,7 @@ export default {
           setTime: "2016-06-16  14:03",
         },
       ];
-      this.total = 3
+      this.total = 3;
       // fetchList(this.listQuery).then(response => {
       //   this.list = response.data.items
       //   this.total = response.data.total
@@ -301,7 +292,7 @@ export default {
     },
     handleUpdate(row) {
       // this.temp = Object.assign({}, row); // copy obj
-      this.$router.push({ name:'ComplexTableDetail', query: { id: row.id }})
+      this.$router.push({ name: "ComplexTableDetail", query: { id: row.id } });
     },
     handleDelete(row) {
       this.$notify({
