@@ -152,6 +152,7 @@
         </el-form>
       </div>
     </div>
+    <!-- 配置 -->
     <div class="filter-container" v-show="this.active == 1">
       <div class="titleBox"><h3>规则配置器</h3></div>
       <div class="pzBox">
@@ -169,13 +170,54 @@
             <p class="title">字段列表：</p>
             <ul>
               <li v-for="item in this.zdList">
-                <p>{{item.name}}</p>
+                <p>{{ item.name }}</p>
                 <i class="el-icon-circle-plus-outline"></i>
               </li>
             </ul>
           </div>
         </div>
-        <div class="boxRight">1</div>
+        <div class="boxRight">
+          <el-tree
+            :data="treeData"
+            show-checkbox
+            node-key="id"
+            default-expand-all
+            :expand-on-click-node="false"
+          >
+            <div class="custom-tree-node" slot-scope="{ node, data }">
+              <el-select
+                size="mini"
+                v-model="data.treeSelect"
+                placeholder="请选择"
+                @change="seleChange(data)"
+              >
+                <el-option
+                  v-for="item in treeList"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                >
+                </el-option>
+              </el-select>
+              <span class="treeText">{{ node.label }}</span>
+              <span>
+                <el-button
+                  type="text"
+                  @click="() => append(node, data)"
+                  icon="el-icon-circle-plus-outline"
+                >
+                </el-button>
+                <el-button
+                  type="text"
+                  v-show="node.level != 1"
+                  icon="el-icon-delete"
+                  @click="() => remove(node, data)"
+                >
+                </el-button>
+              </span>
+            </div>
+          </el-tree>
+        </div>
       </div>
     </div>
     <div class="filter-container">
@@ -199,6 +241,7 @@
 </template>
 
 <script>
+let id = 1000;
 import waves from "@/directive/waves"; // waves directive
 import { parseTime } from "@/utils";
 import Pagination from "@/components/Pagination"; // secondary package based on el-pagination
@@ -220,8 +263,24 @@ export default {
     },
   },
   data() {
+    const data = [
+      {
+        id: 1,
+        label: "一级",
+        treeSelect: "",
+        children: [
+          {
+            id: 2,
+            label: "二级",
+            treeSelect: "",
+            children: [],
+          },
+        ],
+      },
+    ];
     return {
-      active: 1,
+      treeData: JSON.parse(JSON.stringify(data)),
+      active: 0,
       inputSS: "", //配置器搜索
       temp: {
         id: undefined,
@@ -291,6 +350,28 @@ export default {
           label: "年",
         },
       ],
+      treeList: [
+        {
+          value: "选项1",
+          label: "如下所有条件都成立",
+        },
+        {
+          value: "选项2",
+          label: "如下任一条件成立",
+        },
+        {
+          value: "选项3",
+          label: "如下所有条件都不成立",
+        },
+        {
+          value: "选项4",
+          label: "并且",
+        },
+        {
+          value: "选项5",
+          label: "或者",
+        },
+      ],
       rules: {
         name: [
           { required: true, message: "变量名称为必填项。", trigger: "blur" },
@@ -317,12 +398,37 @@ export default {
     };
   },
   created() {
+    var thisActive = this.$route.query.active;
+    this.active = thisActive;
     this.temp.type = this.varType[0];
     this.temp.method = this.methodList[0].value;
     this.temp.dimension = [this.dimensionList[0].value];
     this.temp.time = this.timeList[0].value;
   },
   methods: {
+    // 监听tree下拉框
+    seleChange(data) {
+      console.log(data);
+      console.log(this.treeData);
+    },
+    // 新增节点
+    append(node, data) {
+      const newChild = { id: id++, label: "测试", children: [] };
+      if (!data.children) {
+        this.$set(data, "children", []);
+      }
+      data.children.push(newChild);
+      console.log(this.treeData);
+      console.log(node);
+    },
+    // 删除节点
+    remove(node, data) {
+      const parent = node.parent;
+      const children = parent.data.children || parent.data;
+      const index = children.findIndex((d) => d.id === data.id);
+      children.splice(index, 1);
+      console.log(this.treeData);
+    },
     pre() {
       if (this.active-- == 0) this.active = 3;
     },
@@ -333,6 +439,9 @@ export default {
 };
 </script>
 <style lang="scss">
+.el-tree-node__content {
+  height: 35px;
+}
 .el-step__head.is-success {
   color: #009dff;
   border-color: #009dff;
@@ -342,6 +451,9 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
+.treeText{
+  margin-right:5px;
+}
 .buttonBox {
   width: 450px;
   margin: 0px auto;
@@ -417,6 +529,7 @@ export default {
   }
   .boxRight {
     width: 75%;
+    padding: 15px;
   }
 }
 .app-container {

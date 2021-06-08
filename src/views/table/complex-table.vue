@@ -135,9 +135,9 @@
               编辑
             </el-button>
             <el-button
-              v-if="row.status != 'published'"
               size="mini"
               type="success"
+              @click="handlePz(row)"
             >
               配置
             </el-button>
@@ -219,7 +219,7 @@ export default {
           id: 1,
           name: "客户类型",
           stateName: "定义中",
-          state:"success",
+          state: "success",
           sources: "商户注册资料表",
           dimension: "平台客户编号",
           update: "陈象江",
@@ -230,7 +230,7 @@ export default {
           id: 2,
           name: "设备线路状况类型",
           stateName: "定义中",
-          state:"success",
+          state: "success",
           sources: "商户注册资料表",
           dimension: "平台客户编号",
           update: "陈象江",
@@ -241,7 +241,7 @@ export default {
           id: 4,
           name: "商户状态",
           stateName: "定义中",
-          state:"success",
+          state: "success",
           sources: "商户注册资料表",
           dimension: "平台客户编号",
           update: "陈象江",
@@ -292,7 +292,17 @@ export default {
     },
     handleUpdate(row) {
       // this.temp = Object.assign({}, row); // copy obj
-      this.$router.push({ name: "ComplexTableDetail", query: { id: row.id } });
+      this.$router.push({
+        name: "ComplexTableDetail",
+        query: { id: row.id, active: 0 },
+      });
+    },
+    handlePz(row) {
+      // this.temp = Object.assign({}, row); // copy obj
+      this.$router.push({
+        name: "ComplexTableDetail",
+        query: { id: row.id, active: 1 },
+      });
     },
     handleDelete(row) {
       this.$notify({
