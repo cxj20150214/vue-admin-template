@@ -202,10 +202,55 @@
                 </el-option>
               </el-select>
               <div class="zdBox" v-if="node.data.addType == 0">
-                <div class="title">商户管辖机构代码</div>
+                <div class="title">{{ node.data.name }}</div>
+                <div class="filed">
+                  <el-input
+                    size="medium"
+                    style="width: 150px; margin-top: 5px; margin-right: 5px"
+                    v-model="node.data.name"
+                    :disabled="true"
+                  >
+                  </el-input>
+                  <el-select
+                    size="medium"
+                    style="width: 120px; margin-top: 5px; margin-right: 5px"
+                    v-model="node.data.filed_1"
+                    placeholder="请选择"
+                  >
+                    <el-option
+                      v-for="item in filed_1"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    >
+                    </el-option>
+                  </el-select>
+                  <el-select
+                    size="medium"
+                    style="width: 120px; margin-top: 5px; margin-right: 5px"
+                    v-model="node.data.filed_2"
+                    placeholder="请选择"
+                  >
+                    <el-option
+                      v-for="item in filed_2"
+                      :key="item.value"
+                      :label="item.label"
+                      :value="item.value"
+                    >
+                    </el-option>
+                  </el-select>
+                  <el-input
+                    size="medium"
+                    style="width: 160px; margin-top: 5px; margin-right: 5px"
+                    v-model="node.data.text"
+                    placeholder="请输入内容"
+                  ></el-input>
+                </div>
               </div>
               <!-- <span class="treeText">{{ node.label }}</span> -->
-              <span style="margin-top:auto;margin-bottom:auto;margin-left:10px;">
+              <span
+                style="margin-top: auto; margin-bottom: auto; margin-left: 10px"
+              >
                 <!-- <el-button
                   type="text"
                   @click="() => append(node, data)"
@@ -242,7 +287,7 @@
                   type="danger"
                   v-if="node.level != 1"
                   icon="el-icon-delete"
-                  @click="() => remove(node, data)"
+                  @click="() => open(node, data)"
                 >
                   删除
                 </el-button>
@@ -301,7 +346,16 @@ export default {
         label: "一级",
         treeSelect: "1",
         addType: 1,
-        children: [],
+        children: [
+          {
+            id: 2,
+            addType: 0,
+            filed_1: "1",
+            filed_2: "1",
+            text: "",
+            name: "商户名称",
+          },
+        ],
       },
     ];
     return {
@@ -399,6 +453,74 @@ export default {
           label: "或者",
         },
       ],
+      filed_1: [
+        {
+          value: "1",
+          label: "等于",
+        },
+        {
+          value: "2",
+          label: "大于",
+        },
+        {
+          value: "3",
+          label: "小于",
+        },
+        {
+          value: "4",
+          label: "大于等于",
+        },
+        {
+          value: "5",
+          label: "小于等于",
+        },
+        {
+          value: "6",
+          label: "为空",
+        },
+        {
+          value: "7",
+          label: "不为空",
+        },
+        {
+          value: "8",
+          label: "存在于",
+        },
+        {
+          value: "9",
+          label: "不存在于",
+        },
+      ],
+      filed_2: [
+        {
+          value: "1",
+          label: "常量",
+        },
+        {
+          value: "2",
+          label: "范围",
+        },
+        {
+          value: "3",
+          label: "正则表达式",
+        },
+        {
+          value: "4",
+          label: "基础变量",
+        },
+        {
+          value: "5",
+          label: "衍生变量",
+        },
+        {
+          value: "6",
+          label: "关联字段",
+        },
+        {
+          value: "7",
+          label: "自定义参数",
+        },
+      ],
       rules: {
         name: [
           { required: true, message: "变量名称为必填项。", trigger: "blur" },
@@ -458,10 +580,10 @@ export default {
     appendField(node, data) {
       const newChild = {
         id: id++,
-        label: "字段",
+        name: "商户名称",
         addType: 0,
-        // children: [],
-        // treeSelect: "1",
+        filed_1: "1",
+        filed_2: "1",
       };
       if (!data.children) {
         this.$set(data, "children", []);
@@ -470,6 +592,22 @@ export default {
       console.log(node);
       console.log(data);
       console.log(this.treeData);
+    },
+    // 确认删除
+    open(node, data) {
+      this.$confirm("此操作将删除该字段, 是否继续?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          this.remove(node, data);
+          this.$message({
+            type: "success",
+            message: "删除成功!",
+          });
+        })
+        .catch(() => {});
     },
     // 删除节点
     remove(node, data) {
@@ -489,7 +627,7 @@ export default {
 };
 </script>
 <style lang="scss">
-.custom-tree-node{
+.custom-tree-node {
   display: flex;
   flex-direction: row;
 }
@@ -505,27 +643,32 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
-.treeSelect{
-  margin:10px 0px;
+.treeSelect {
+  margin: 10px 0px;
 }
-.zdBox{
-  width:500px;
-  height:70px;
-  margin-top:10px;
-  margin-bottom:10px;
-  border:1px solid #ddd;
+.zdBox {
+  width: 600px;
+  height: 70px;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
   border-radius: 5px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  .title{
-    background-color: #009DFF;
-    width:100%;
-    height:20px;
-    color:#fff;
-    font-size:12px;
+  .title {
+    background-color: #009dff;
+    width: 100%;
+    height: 20px;
+    color: #fff;
+    font-size: 12px;
     line-height: 20px;
-    padding-left:10px;
+    padding-left: 10px;
+  }
+  .filed {
+    display: flex;
+    flex-direction: row;
+    padding: 0px 10px;
   }
 }
 .treeText {
@@ -557,7 +700,7 @@ export default {
   display: flex;
   flex-direction: row;
   .boxLeft {
-    width: 25%;
+    width: 20%;
     border-right: 1px solid #ddd;
     display: flex;
     flex-direction: column;
@@ -605,7 +748,7 @@ export default {
     }
   }
   .boxRight {
-    width: 75%;
+    width: 80%;
     padding: 15px;
   }
 }
