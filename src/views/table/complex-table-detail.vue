@@ -186,9 +186,11 @@
           >
             <div class="custom-tree-node" slot-scope="{ node, data }">
               <el-select
+                v-if="node.data.addType == 1"
                 size="mini"
                 v-model="data.treeSelect"
                 placeholder="请选择"
+                class="treeSelect"
                 @change="seleChange(data)"
               >
                 <el-option
@@ -199,20 +201,50 @@
                 >
                 </el-option>
               </el-select>
-              <span class="treeText">{{ node.label }}</span>
-              <span>
-                <el-button
+              <div class="zdBox" v-if="node.data.addType == 0">
+                <div class="title">商户管辖机构代码</div>
+              </div>
+              <!-- <span class="treeText">{{ node.label }}</span> -->
+              <span style="margin-top:auto;margin-bottom:auto;margin-left:10px;">
+                <!-- <el-button
                   type="text"
                   @click="() => append(node, data)"
                   icon="el-icon-circle-plus-outline"
                 >
-                </el-button>
-                <el-button
+                </el-button> -->
+                <!-- <el-button
                   type="text"
                   v-show="node.level != 1"
                   icon="el-icon-delete"
                   @click="() => remove(node, data)"
                 >
+                </el-button> -->
+                <el-button
+                  v-if="node.data.addType == 1"
+                  size="mini"
+                  type="primary"
+                  icon="el-icon-circle-plus-outline"
+                  @click="() => appendField(node, data)"
+                >
+                  新增字段
+                </el-button>
+                <el-button
+                  v-if="node.data.addType == 1"
+                  size="mini"
+                  type="success"
+                  icon="el-icon-circle-plus-outline"
+                  @click="() => append(node, data)"
+                >
+                  新增条件
+                </el-button>
+                <el-button
+                  size="mini"
+                  type="danger"
+                  v-if="node.level != 1"
+                  icon="el-icon-delete"
+                  @click="() => remove(node, data)"
+                >
+                  删除
                 </el-button>
               </span>
             </div>
@@ -267,18 +299,13 @@ export default {
       {
         id: 1,
         label: "一级",
-        treeSelect: "",
-        children: [
-          {
-            id: 2,
-            label: "二级",
-            treeSelect: "",
-            children: [],
-          },
-        ],
+        treeSelect: "1",
+        addType: 1,
+        children: [],
       },
     ];
     return {
+      addType: 0, //新增字段或条件
       treeData: JSON.parse(JSON.stringify(data)),
       active: 0,
       inputSS: "", //配置器搜索
@@ -352,23 +379,23 @@ export default {
       ],
       treeList: [
         {
-          value: "选项1",
+          value: "1",
           label: "如下所有条件都成立",
         },
         {
-          value: "选项2",
+          value: "2",
           label: "如下任一条件成立",
         },
         {
-          value: "选项3",
+          value: "3",
           label: "如下所有条件都不成立",
         },
         {
-          value: "选项4",
+          value: "4",
           label: "并且",
         },
         {
-          value: "选项5",
+          value: "5",
           label: "或者",
         },
       ],
@@ -411,15 +438,38 @@ export default {
       console.log(data);
       console.log(this.treeData);
     },
-    // 新增节点
+    // 新增条件
     append(node, data) {
-      const newChild = { id: id++, label: "测试", children: [] };
+      const newChild = {
+        id: id++,
+        label: "条件",
+        addType: 1,
+        children: [],
+        treeSelect: "1",
+      };
       if (!data.children) {
         this.$set(data, "children", []);
       }
       data.children.push(newChild);
-      console.log(this.treeData);
       console.log(node);
+      console.log(data);
+    },
+    // 新增字段
+    appendField(node, data) {
+      const newChild = {
+        id: id++,
+        label: "字段",
+        addType: 0,
+        // children: [],
+        // treeSelect: "1",
+      };
+      if (!data.children) {
+        this.$set(data, "children", []);
+      }
+      data.children.push(newChild);
+      console.log(node);
+      console.log(data);
+      console.log(this.treeData);
     },
     // 删除节点
     remove(node, data) {
@@ -439,8 +489,12 @@ export default {
 };
 </script>
 <style lang="scss">
+.custom-tree-node{
+  display: flex;
+  flex-direction: row;
+}
 .el-tree-node__content {
-  height: 35px;
+  height: auto;
 }
 .el-step__head.is-success {
   color: #009dff;
@@ -451,8 +505,31 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
-.treeText{
-  margin-right:5px;
+.treeSelect{
+  margin:10px 0px;
+}
+.zdBox{
+  width:500px;
+  height:70px;
+  margin-top:10px;
+  margin-bottom:10px;
+  border:1px solid #ddd;
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  .title{
+    background-color: #009DFF;
+    width:100%;
+    height:20px;
+    color:#fff;
+    font-size:12px;
+    line-height: 20px;
+    padding-left:10px;
+  }
+}
+.treeText {
+  margin-right: 5px;
 }
 .buttonBox {
   width: 450px;
