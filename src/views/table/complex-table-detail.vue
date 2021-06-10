@@ -47,7 +47,7 @@
           <el-form-item label="变量名称" prop="name" width="80px">
             <el-input v-model="temp.name" />
           </el-form-item>
-          <el-form-item label="变量类型" prop="type">
+          <el-form-item label="表名称" prop="type">
             <el-select
               v-model="temp.type"
               class="filter-item"
@@ -383,6 +383,7 @@ export default {
         {
           name: "商户名称",
           id: 1,
+          zdId: 1,
           addType: 0,
           filed_1: "1",
           filed_2: "1",
@@ -390,6 +391,7 @@ export default {
         {
           name: "商户状态",
           id: 2,
+          zdId: 2,
           addType: 0,
           filed_1: "2",
           filed_2: "2",
@@ -397,16 +399,18 @@ export default {
         {
           name: "集团商户标志",
           id: 3,
+          zdId: 3,
           addType: 0,
-          filed_1: "1",
-          filed_2: "1",
+          filed_1: "3",
+          filed_2: "3",
         },
         {
           name: "法人证件号码",
           id: 4,
+          zdId: 4,
           addType: 0,
-          filed_1: "1",
-          filed_2: "1",
+          filed_1: "4",
+          filed_2: "4",
         },
       ], //字段列表
       dimensionList: [
@@ -580,6 +584,7 @@ export default {
       this.isActive = index;
       this.addZd = "";
       this.addZd = item;
+      console.log(this.addZd);
     },
     // 监听tree下拉框
     seleChange(data) {
@@ -613,7 +618,15 @@ export default {
           },
         });
       } else {
-        const newChild = this.addZd;
+        // const newChild = this.addZd;
+        const newChild = {
+          id: id++,
+          zdId: this.addZd.zdId,
+          name: this.addZd.name,
+          addType: 0,
+          filed_1: this.addZd.filed_1,
+          filed_2: this.addZd.filed_2,
+        };
         if (!data.children) {
           this.$set(data, "children", []);
         }
