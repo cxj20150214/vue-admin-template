@@ -169,9 +169,17 @@
           <div class="listbox">
             <p class="title">字段列表：</p>
             <ul>
-              <li v-for="item in this.zdList">
+              <li
+                v-for="(item, index) in this.zdList"
+                :key="index"
+                :class="{ active: isActive === index }"
+                @click="getZd(item, index)"
+              >
                 <p>{{ item.name }}</p>
-                <i class="el-icon-circle-plus-outline"></i>
+                <div>
+                  <i class="el-icon-circle-plus-outline"></i>
+                  <i class="el-icon-circle-check" style="color: #fff"></i>
+                </div>
               </li>
             </ul>
           </div>
@@ -274,7 +282,7 @@
                   新增字段
                 </el-button>
                 <el-button
-                  v-if="node.data.addType == 1"
+                  v-if="node.data.addType == 1 && node.level == 1"
                   size="mini"
                   type="success"
                   icon="el-icon-circle-plus-outline"
@@ -346,19 +354,14 @@ export default {
         label: "一级",
         treeSelect: "1",
         addType: 1,
-        children: [
-          {
-            id: 2,
-            addType: 0,
-            filed_1: "1",
-            filed_2: "1",
-            text: "",
-            name: "商户名称",
-          },
-        ],
+        children: [],
       },
     ];
     return {
+      addZd: "", //新增字段
+      isActive: "",
+      active_id: "",
+      alltreeData: [], //树状图组装提交
       addType: 0, //新增字段或条件
       treeData: JSON.parse(JSON.stringify(data)),
       active: 0,
@@ -368,7 +371,8 @@ export default {
         name: "",
         type: "",
         remark: "",
-        dimension: [],
+        dimension: ["选项1", "选项2"],
+        dimension1: "选项1,选项1,选项1",
         field: "",
         method: "",
         timeNum: "",
@@ -378,15 +382,31 @@ export default {
       zdList: [
         {
           name: "商户名称",
+          id: 1,
+          addType: 0,
+          filed_1: "1",
+          filed_2: "1",
         },
         {
           name: "商户状态",
+          id: 2,
+          addType: 0,
+          filed_1: "2",
+          filed_2: "2",
         },
         {
           name: "集团商户标志",
+          id: 3,
+          addType: 0,
+          filed_1: "1",
+          filed_2: "1",
         },
         {
           name: "法人证件号码",
+          id: 4,
+          addType: 0,
+          filed_1: "1",
+          filed_2: "1",
         },
       ], //字段列表
       dimensionList: [
@@ -551,14 +571,19 @@ export default {
     this.active = thisActive;
     this.temp.type = this.varType[0];
     this.temp.method = this.methodList[0].value;
-    this.temp.dimension = [this.dimensionList[0].value];
+    // this.temp.dimension = [this.dimensionList[0].value];
     this.temp.time = this.timeList[0].value;
   },
   methods: {
+    // 获取字段列表信息
+    getZd(item, index) {
+      this.isActive = index;
+      this.addZd = "";
+      this.addZd = item;
+    },
     // 监听tree下拉框
     seleChange(data) {
       console.log(data);
-      console.log(this.treeData);
     },
     // 新增条件
     append(node, data) {
@@ -573,25 +598,28 @@ export default {
         this.$set(data, "children", []);
       }
       data.children.push(newChild);
-      console.log(node);
       console.log(data);
     },
     // 新增字段
     appendField(node, data) {
-      const newChild = {
-        id: id++,
-        name: "商户名称",
-        addType: 0,
-        filed_1: "1",
-        filed_2: "1",
-      };
-      if (!data.children) {
-        this.$set(data, "children", []);
+      if (this.addZd === "") {
+        this.$alert("请从左侧选择字段", {
+          confirmButtonText: "确定",
+          callback: (action) => {
+            // this.$message({
+            //   type: "info",
+            //   message: `action: ${action}`,
+            // });
+          },
+        });
+      } else {
+        const newChild = this.addZd;
+        if (!data.children) {
+          this.$set(data, "children", []);
+        }
+        data.children.push(newChild);
+        console.log(data);
       }
-      data.children.push(newChild);
-      console.log(node);
-      console.log(data);
-      console.log(this.treeData);
     },
     // 确认删除
     open(node, data) {
@@ -602,9 +630,10 @@ export default {
       })
         .then(() => {
           this.remove(node, data);
-          this.$message({
+          this.$notify({
+            title: "成功",
+            message: "节点成功删除",
             type: "success",
-            message: "删除成功!",
           });
         })
         .catch(() => {});
@@ -627,6 +656,17 @@ export default {
 };
 </script>
 <style lang="scss">
+.el-icon-circle-check {
+  display: none;
+}
+.active {
+  .el-icon-circle-check {
+    display: block;
+  }
+  .el-icon-circle-plus-outline {
+    display: none;
+  }
+}
 .custom-tree-node {
   display: flex;
   flex-direction: row;
@@ -734,11 +774,16 @@ export default {
           margin: 5px;
           box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
           background-color: #fffdf4;
+          cursor: pointer;
+          &.active {
+            box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
+            background-color: #009dff;
+            color: #fff;
+          }
           &:hover {
             box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
           }
           i {
-            cursor: pointer;
           }
           p {
             margin: 0px;
