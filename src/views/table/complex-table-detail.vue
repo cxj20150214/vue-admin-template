@@ -191,6 +191,8 @@
             node-key="id"
             default-expand-all
             :expand-on-click-node="false"
+            draggable
+            :allow-drop="collapse"
           >
             <div class="custom-tree-node" slot-scope="{ node, data }">
               <el-select
@@ -312,6 +314,12 @@
           @click="pre"
           :disabled="this.active == 0"
           >上一步</el-button
+        >
+        <el-button
+          style="margin-top: 12px"
+          @click="prePZ()"
+          v-if="this.active == 1"
+          >保存配置</el-button
         >
         <el-button
           style="margin-top: 12px"
@@ -579,6 +587,104 @@ export default {
     this.temp.time = this.timeList[0].value;
   },
   methods: {
+    // 拖拽
+    collapse(moveNode, inNode, type) {
+      if (moveNode.level == 1 && inNode.level == 1) {
+        // 四种情况
+        if (moveNode.nextSibling == undefined) {
+          return type == "prev";
+        } else if (inNode.nextSibling == undefined) {
+          return type == "next";
+        } else if (moveNode.nextSibling.id !== inNode.id) {
+          return type == "prev";
+        } else {
+          return type == "next";
+        }
+      }
+      //是否为同级下的子节点
+      if (
+        moveNode.level == 2 &&
+        inNode.level == 2 &&
+        moveNode.parent.id == inNode.parent.id
+      ) {
+        // 四种情况
+        if (moveNode.nextSibling == undefined) {
+          return type == "prev";
+        } else if (inNode.nextSibling == undefined) {
+          return type == "next";
+        } else if (moveNode.nextSibling.id !== inNode.id) {
+          return type == "prev";
+        } else {
+          return type == "next";
+        }
+      }
+      //是否为同级下的子节点
+      if (
+        moveNode.level == 3 &&
+        inNode.level == 3 &&
+        moveNode.parent.id == inNode.parent.id
+      ) {
+        // 四种情况
+        if (moveNode.nextSibling == undefined) {
+          return type == "prev";
+        } else if (inNode.nextSibling == undefined) {
+          return type == "next";
+        } else if (moveNode.nextSibling.id !== inNode.id) {
+          return type == "prev";
+        } else {
+          return type == "next";
+        }
+      }
+    },
+    // 配置保存
+    prePZ() {
+      var newList1 = [];
+      console.log(this.treeData, "treeData");
+      this.treeData[0].children.map((item) => {
+        if (item.addType === 0) {
+          newList1.push({
+            addType: item.addType,
+            filed_1: item.filed_1,
+            filed_2: item.filed_2,
+            id: item.id,
+            name: item.name,
+            zdId: item.zdId,
+            level: 1,
+            tiaojian1: this.treeData[0].treeSelect,
+          });
+        }
+      });
+      var newList2 = [];
+      this.treeData[0].children.map((item) => {
+        if (item.addType === 1) {
+          newList2.push(item);
+        }
+      });
+      var newList3 = [];
+      newList2.map((item) => {
+        var thisID = item.id;
+        var thisTJ = item.treeSelect;
+        item.children.map((item) => {
+          newList3.push({
+            addType: 0,
+            filed_1: item.filed_1,
+            filed_2: item.filed_2,
+            id: item.id,
+            name: item.name,
+            zdId: item.zdId,
+            level: 2,
+            tiaojian1: this.treeData[0].treeSelect,
+            tiaojian2: thisTJ,
+            thisID: thisID,
+          });
+        });
+      });
+      console.log(newList1, "newList1");
+      console.log(newList2, "newList2");
+      console.log(newList3, "newList3");
+      var newListAll = newList1.concat(newList3);
+      console.log(newListAll, "整合所有变量");
+    },
     // 获取字段列表信息
     getZd(item, index) {
       this.isActive = index;
@@ -631,7 +737,7 @@ export default {
           this.$set(data, "children", []);
         }
         data.children.push(newChild);
-        console.log(data);
+        console.log(data, "111");
       }
     },
     // 确认删除
