@@ -39,7 +39,7 @@
         class="filter-item"
         @keyup.enter.native="handleFilter"
       />
-      <!-- <el-select
+      <el-select
         v-model="listQuery.importance"
         placeholder="全部"
         clearable
@@ -52,7 +52,7 @@
           :label="item"
           :value="item"
         />
-      </el-select> -->
+      </el-select>
       <el-button
         v-waves
         class="filter-item"
@@ -191,7 +191,7 @@ export default {
         type: undefined,
         sort: "+id",
       },
-      // importanceOptions: ["全部", "一级", "二级", "三级"],
+      importanceOptions: ["全部", "一级", "二级", "三级"],
       temp: {
         id: undefined,
         importance: 1,
