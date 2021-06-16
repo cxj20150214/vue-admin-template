@@ -167,7 +167,7 @@
             </el-input>
           </div>
           <div class="listbox">
-            <p class="title">字段列表：</p>
+            <!-- <p class="title">字段列表：</p> -->
             <el-tree
               :data="treeData1"
               ref="tree1"
@@ -273,6 +273,7 @@
                     size="medium"
                     style="width: 160px; margin-top: 5px; margin-right: 5px"
                     v-model="node.data.text"
+                    v-if="node.data.filed_1 != '6'"
                     placeholder="请输入内容"
                   ></el-input>
                 </div>
@@ -401,6 +402,7 @@ export default {
           id: id++,
           zdId: 1,
           addType: 0,
+          text: "",
           filed_1: "1",
           filed_2: "1",
         },
@@ -408,6 +410,7 @@ export default {
           name: "商户状态",
           id: id++,
           zdId: 2,
+          text: "",
           addType: 0,
           filed_1: "2",
           filed_2: "2",
@@ -416,6 +419,7 @@ export default {
           name: "集团商户标志",
           id: id++,
           zdId: 3,
+          text: "",
           addType: 0,
           filed_1: "3",
           filed_2: "3",
@@ -424,6 +428,7 @@ export default {
           name: "法人证件号码",
           id: id++,
           zdId: 4,
+          text: "",
           addType: 0,
           filed_1: "4",
           filed_2: "4",
@@ -591,30 +596,30 @@ export default {
           value: "1",
           label: "常量",
         },
-        {
-          value: "2",
-          label: "范围",
-        },
-        {
-          value: "3",
-          label: "正则表达式",
-        },
-        {
-          value: "4",
-          label: "基础变量",
-        },
-        {
-          value: "5",
-          label: "衍生变量",
-        },
-        {
-          value: "6",
-          label: "关联字段",
-        },
-        {
-          value: "7",
-          label: "自定义参数",
-        },
+        // {
+        //   value: "2",
+        //   label: "范围",
+        // },
+        // {
+        //   value: "3",
+        //   label: "正则表达式",
+        // },
+        // {
+        //   value: "4",
+        //   label: "基础变量",
+        // },
+        // {
+        //   value: "5",
+        //   label: "衍生变量",
+        // },
+        // {
+        //   value: "6",
+        //   label: "关联字段",
+        // },
+        // {
+        //   value: "7",
+        //   label: "自定义参数",
+        // },
       ],
       rules: {
         name: [
@@ -681,7 +686,6 @@ export default {
     },
     // 树状图拖拽
     collapse(moveNode, inNode, type) {
-      console.log(inNode);
       if (moveNode.level == 1 && inNode.level == 1) {
         // 四种情况
         return type == "inner";
@@ -771,6 +775,7 @@ export default {
             id: item.id,
             name: item.name,
             zdId: item.zdId,
+            text: item.text,
             level: 1,
             tiaojian1: this.treeData[0].treeSelect,
           });
@@ -794,6 +799,7 @@ export default {
             id: item.id,
             name: item.name,
             zdId: item.zdId,
+            text: item.text,
             level: 2,
             tiaojian1: this.treeData[0].treeSelect,
             tiaojian2: thisTJ,
@@ -957,13 +963,13 @@ export default {
   text-align: center;
   padding: 20%;
   background-color: #fff;
-  .shBox{
-    width:100%;
+  .shBox {
+    width: 100%;
     text-align: center;
     font-size: 24px;
-    .el-icon-circle-check{
-      font-size:24px;
-      color:#67C23A;
+    .el-icon-circle-check {
+      font-size: 24px;
+      color: #67c23a;
     }
   }
 }
