@@ -160,7 +160,7 @@
           <div class="ssbox">
             <el-input
               size="mini"
-              placeholder="请输入"
+              placeholder="请输入字段名"
               prefix-icon="el-icon-search"
               v-model="inputSS"
             >
@@ -168,7 +168,26 @@
           </div>
           <div class="listbox">
             <p class="title">字段列表：</p>
-            <ul>
+            <el-tree
+              :data="treeData1"
+              ref="tree1"
+              class="tree treeClass"
+              node-key="id"
+              draggable
+              default-expand-all
+              :allow-drop="returnFalse"
+              @node-drag-start="handleDragstart"
+              @node-drag-end="handleDragend"
+            >
+              <div class="custom-tree-node" slot-scope="{ node, data }">
+                <p>{{ node.data.name }}</p>
+                <div>
+                  <i class="el-icon-circle-plus-outline"></i>
+                  <!-- <i class="el-icon-circle-check" style="color: #fff"></i> -->
+                </div>
+              </div>
+            </el-tree>
+            <!-- <ul>
               <li
                 v-for="(item, index) in this.zdList"
                 :key="index"
@@ -181,12 +200,13 @@
                   <i class="el-icon-circle-check" style="color: #fff"></i>
                 </div>
               </li>
-            </ul>
+            </ul> -->
           </div>
         </div>
         <div class="boxRight">
           <el-tree
             :data="treeData"
+            ref="tree2"
             show-checkbox
             node-key="id"
             default-expand-all
@@ -307,6 +327,15 @@
         </div>
       </div>
     </div>
+    <!-- 变量审核 -->
+    <div class="filter-container" v-show="this.active == 2">
+      <div class="sh">
+        <div class="shBox">
+          <p>审核成功</p>
+          <i class="el-icon-circle-check"></i>
+        </div>
+      </div>
+    </div>
     <div class="filter-container">
       <div class="buttonBox">
         <el-button
@@ -366,6 +395,40 @@ export default {
       },
     ];
     return {
+      treeData1: [
+        {
+          name: "商户名称",
+          id: id++,
+          zdId: 1,
+          addType: 0,
+          filed_1: "1",
+          filed_2: "1",
+        },
+        {
+          name: "商户状态",
+          id: id++,
+          zdId: 2,
+          addType: 0,
+          filed_1: "2",
+          filed_2: "2",
+        },
+        {
+          name: "集团商户标志",
+          id: id++,
+          zdId: 3,
+          addType: 0,
+          filed_1: "3",
+          filed_2: "3",
+        },
+        {
+          name: "法人证件号码",
+          id: id++,
+          zdId: 4,
+          addType: 0,
+          filed_1: "4",
+          filed_2: "4",
+        },
+      ], //测试拖拽
       addZd: "", //新增字段
       isActive: "",
       active_id: "",
@@ -587,9 +650,67 @@ export default {
     this.temp.time = this.timeList[0].value;
   },
   methods: {
-    // 拖拽
+    // 测试拖拽
+    returnTrue(draggingNode, dropNode, type) {},
+    returnFalse() {
+      return false;
+    },
+    handleDragstart(node, event) {
+      this.$refs.tree2.$emit("tree-node-drag-start", event, { node: node });
+    },
+    handleDragend(draggingNode, endNode, position, event) {
+      // 插入一个空节点用于占位
+      let emptyData = { id: +new Date(), children: [] };
+      this.$refs.tree1.insertBefore(emptyData, draggingNode);
+
+      this.$refs.tree2.$emit("tree-node-drag-end", event);
+      this.$nextTick(() => {
+        // 如果是移动到了当前树上，需要清掉空节点
+        if (this.$refs.tree1.getNode(draggingNode.data)) {
+          this.$refs.tree1.remove(emptyData);
+        } else {
+          // 如果移动到了别的树上，需要恢复该节点，并清掉空节点
+          let data = JSON.parse(JSON.stringify(draggingNode.data));
+          this.$refs.tree1.insertAfter(
+            data,
+            this.$refs.tree1.getNode(emptyData)
+          );
+          this.$refs.tree1.remove(emptyData);
+        }
+      });
+    },
+    // 树状图拖拽
     collapse(moveNode, inNode, type) {
+      console.log(inNode);
       if (moveNode.level == 1 && inNode.level == 1) {
+        // 四种情况
+        return type == "inner";
+        // if (moveNode.nextSibling == undefined) {
+        //   return type == "prev";
+        // } else if (inNode.nextSibling == undefined) {
+        //   return type == "next";
+        // } else if (moveNode.nextSibling.id !== inNode.id) {
+        //   return type == "prev";
+        // } else {
+        //   return type == "next";
+        // }
+      }
+      if (moveNode.level == 1 && inNode.level == 2) {
+        // 四种情况
+        if (inNode.data.addType == 1) {
+          return type == "inner";
+        }
+        if (moveNode.nextSibling == undefined) {
+          return type == "prev";
+        } else if (inNode.nextSibling == undefined) {
+          return type == "next";
+        } else if (moveNode.nextSibling.id !== inNode.id) {
+          return type == "prev";
+        } else {
+          return type == "next";
+        }
+      }
+      if (moveNode.level == 1 && inNode.level == 3) {
         // 四种情况
         if (moveNode.nextSibling == undefined) {
           return type == "prev";
@@ -601,6 +722,7 @@ export default {
           return type == "next";
         }
       }
+
       //是否为同级下的子节点
       if (
         moveNode.level == 2 &&
@@ -686,12 +808,12 @@ export default {
       console.log(newListAll, "整合所有变量");
     },
     // 获取字段列表信息
-    getZd(item, index) {
-      this.isActive = index;
-      this.addZd = "";
-      this.addZd = item;
-      console.log(this.addZd);
-    },
+    // getZd(item, index) {
+    //   this.isActive = index;
+    //   this.addZd = "";
+    //   this.addZd = item;
+    //   console.log(this.addZd);
+    // },
     // 监听tree下拉框
     seleChange(data) {
       console.log(data);
@@ -714,7 +836,7 @@ export default {
     // 新增字段
     appendField(node, data) {
       if (this.addZd === "") {
-        this.$alert("请从左侧选择字段", {
+        this.$alert("请从左侧拖拽字段", {
           confirmButtonText: "确定",
           callback: (action) => {
             // this.$message({
@@ -775,8 +897,33 @@ export default {
 };
 </script>
 <style lang="scss">
+.treeClass {
+  .el-tree-node__content {
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.2);
+    background-color: #fffdf4;
+    margin: 5px;
+    .custom-tree-node {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      width: 100%;
+      .el-icon-circle-plus-outline {
+        margin-top: 10px;
+        margin-right: 10px;
+      }
+    }
+  }
+  .el-tree-node__content:hover {
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.4);
+    background-color: #009dff;
+    color: #fff;
+  }
+  p {
+    margin: 10px 0px;
+    font-size: 14px;
+  }
+}
 .el-icon-circle-check {
-  display: none;
 }
 .active {
   .el-icon-circle-check {
@@ -802,6 +949,24 @@ export default {
 }
 </style>
 <style lang="scss" scoped>
+.sh {
+  margin: 0px auto;
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  text-align: center;
+  padding: 20%;
+  background-color: #fff;
+  .shBox{
+    width:100%;
+    text-align: center;
+    font-size: 24px;
+    .el-icon-circle-check{
+      font-size:24px;
+      color:#67C23A;
+    }
+  }
+}
 .treeSelect {
   margin: 10px 0px;
 }
