@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-container>
+    <el-container v-if="this.$route.query.type != 'add'">
       <div class="jcBox">
         <div class="box_l">
           <h2>
@@ -77,7 +77,7 @@
       <div class="titleBox"><h3>运行信息</h3></div>
       <div class="bzBox">
         <el-form
-          ref="dataForm"
+          ref="dataForm1"
           :rules="rules"
           :model="temp"
           label-position="left"
@@ -413,7 +413,7 @@ export default {
           text: "",
           addType: 0,
           filed_1: "2",
-          filed_2: "2",
+          filed_2: "1",
         },
         {
           name: "集团商户标志",
@@ -422,7 +422,7 @@ export default {
           text: "",
           addType: 0,
           filed_1: "3",
-          filed_2: "3",
+          filed_2: "1",
         },
         {
           name: "法人证件号码",
@@ -431,7 +431,7 @@ export default {
           text: "",
           addType: 0,
           filed_1: "4",
-          filed_2: "4",
+          filed_2: "1",
         },
       ], //测试拖拽
       addZd: "", //新增字段
@@ -897,7 +897,23 @@ export default {
       if (this.active-- == 0) this.active = 3;
     },
     next() {
-      if (this.active++ > 2) this.active = 0;
+      if (this.active === 0) {
+        this.$refs["dataForm"].validate((valid) => {
+          if (valid) {
+            this.$refs["dataForm1"].validate((valid) => {
+              if (valid) {
+                if (this.active++ > 2) this.active = 0;
+              }else{
+                  this.$message.error('请填写必填项噢');
+              }
+            });
+          }else{
+              this.$message.error('请填写必填项噢');
+          }
+        });
+      }else{
+        if (this.active++ > 2) this.active = 0;
+      }
     },
   },
 };

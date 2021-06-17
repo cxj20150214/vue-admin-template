@@ -92,10 +92,10 @@
             <span>{{ row.name }}</span>
           </template>
         </el-table-column>
-        <el-table-column label="状态" width="80px" align="center">
+        <el-table-column label="状态" width="100px" align="center">
           <template slot-scope="{ row }">
-            <el-tag :type="row.state">
-              {{ row.stateName }}
+            <el-tag type="success">
+              {{ optionsLx[row.stateName]["label"] }}
             </el-tag>
           </template>
         </el-table-column>
@@ -134,11 +134,7 @@
             <el-button type="primary" size="mini" @click="handleUpdate(row)">
               编辑
             </el-button>
-            <el-button
-              size="mini"
-              type="success"
-              @click="handlePz(row)"
-            >
+            <el-button size="mini" type="success" @click="handlePz(row)">
               配置
             </el-button>
             <el-button
@@ -191,6 +187,20 @@ export default {
         type: undefined,
         sort: "+id",
       },
+      optionsLx: [
+        {
+          value: "0",
+          label: "定义中",
+        },
+        {
+          value: "1",
+          label: "审核中",
+        },
+        {
+          value: "2",
+          label: "审核通过",
+        },
+      ],
       importanceOptions: ["全部", "一级", "二级", "三级"],
       temp: {
         id: undefined,
@@ -218,7 +228,7 @@ export default {
         {
           id: 1,
           name: "客户类型",
-          stateName: "定义中",
+          stateName: "0",
           state: "success",
           sources: "商户注册资料表",
           dimension: "平台客户编号",
@@ -229,7 +239,7 @@ export default {
         {
           id: 2,
           name: "设备线路状况类型",
-          stateName: "定义中",
+          stateName: "1",
           state: "success",
           sources: "商户注册资料表",
           dimension: "平台客户编号",
@@ -240,7 +250,7 @@ export default {
         {
           id: 4,
           name: "商户状态",
-          stateName: "定义中",
+          stateName: "2",
           state: "success",
           sources: "商户注册资料表",
           dimension: "平台客户编号",
@@ -283,25 +293,29 @@ export default {
       };
     },
     handleCreate() {
-      this.resetTemp();
-      this.dialogStatus = "create";
-      this.dialogFormVisible = true;
-      this.$nextTick(() => {
-        this.$refs["dataForm"].clearValidate();
+      // this.resetTemp();
+      // this.dialogStatus = "create";
+      // this.dialogFormVisible = true;
+      // this.$nextTick(() => {
+      //   this.$refs["dataForm"].clearValidate();
+      // });
+      this.$router.push({
+        name: "ComplexTableDetail",
+        query: { active: 0, type: "add" },
       });
     },
     handleUpdate(row) {
       // this.temp = Object.assign({}, row); // copy obj
       this.$router.push({
         name: "ComplexTableDetail",
-        query: { id: row.id, active: 0 },
+        query: { id: row.id, active: 0 ,type: "edit"},
       });
     },
     handlePz(row) {
       // this.temp = Object.assign({}, row); // copy obj
       this.$router.push({
         name: "ComplexTableDetail",
-        query: { id: row.id, active: 1 },
+        query: { id: row.id, active: 1 ,type: "pz"},
       });
     },
     handleDelete(row) {
