@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="app-container" @contextmenu.prevent>
     <el-container v-if="this.$route.query.type != 'add'">
       <div class="jcBox">
         <div class="box_l">
@@ -47,7 +47,22 @@
           <el-form-item label="变量名称" prop="name" width="80px">
             <el-input v-model="temp.name" />
           </el-form-item>
-          <el-form-item label="表名称" prop="type">
+          <el-form-item label="数据来源" prop="source">
+            <el-select
+              v-model="temp.source"
+              class="filter-item"
+              placeholder="请选择"
+            >
+              <el-option
+                v-for="item in sourceList"
+                :key="item.value"
+                :label="item.name"
+                :value="item.value"
+              />
+            </el-select>
+            <p class="intro">设定变量来源的业务系统数据表</p>
+          </el-form-item>
+          <el-form-item label="表名称" prop="type" v-if="this.temp.source != ''">
             <el-select
               v-model="temp.type"
               class="filter-item"
@@ -84,7 +99,7 @@
           label-width="80px"
           style="width: 450px; margin-left: 50px"
         >
-          <el-form-item label="统计维度" prop="dimension">
+          <!-- <el-form-item label="统计维度" prop="dimension">
             <el-select
               v-model="temp.dimension"
               style="width: 400px"
@@ -102,7 +117,7 @@
             <p class="intro">
               设定变量的统计维度，作为聚合条件，比如：客户编号。
             </p>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="统计字段" prop="field" width="80px">
             <el-input v-model="temp.field" />
             <p class="intro">
@@ -445,6 +460,7 @@ export default {
       temp: {
         id: undefined,
         name: "",
+        source: "",
         type: "",
         remark: "",
         dimension: ["选项1", "选项2"],
@@ -455,6 +471,20 @@ export default {
         time: "",
       },
       varType: ["客户信息", "商户信息", "终端信息"],
+      sourceList:[
+        {
+          value:"1",
+          name:"来源1"
+        },
+        {
+          value:"2",
+          name:"来源2"
+        },
+        {
+          value:"3",
+          name:"来源3"
+        }
+      ],
       zdList: [
         {
           name: "商户名称",
@@ -625,15 +655,18 @@ export default {
         name: [
           { required: true, message: "变量名称为必填项。", trigger: "blur" },
         ],
+        source: [
+          { required: true, message: "数据来源为必填项。", trigger: "blur" },
+        ],
         type: [
-          { required: true, message: "变量类型为必填项。", trigger: "blur" },
+          { required: true, message: "表名称为必填项。", trigger: "blur" },
         ],
         remark: [
           { required: true, message: "变量描述为必填项。", trigger: "blur" },
         ],
-        dimension: [
-          { required: true, message: "统计维度为必填项。", trigger: "blur" },
-        ],
+        // dimension: [
+        //   { required: true, message: "统计维度为必填项。", trigger: "blur" },
+        // ],
         field: [
           { required: true, message: "统计字段为必填项。", trigger: "blur" },
         ],
@@ -649,8 +682,8 @@ export default {
   created() {
     var thisActive = this.$route.query.active;
     this.active = thisActive;
-    this.temp.type = this.varType[0];
-    this.temp.method = this.methodList[0].value;
+    // this.temp.type = this.varType[0];
+    // this.temp.method = this.methodList[0].value;
     // this.temp.dimension = [this.dimensionList[0].value];
     this.temp.time = this.timeList[0].value;
   },
@@ -903,15 +936,15 @@ export default {
             this.$refs["dataForm1"].validate((valid) => {
               if (valid) {
                 if (this.active++ > 2) this.active = 0;
-              }else{
-                  this.$message.error('请填写必填项噢');
+              } else {
+                this.$message.error("请填写必填项噢");
               }
             });
-          }else{
-              this.$message.error('请填写必填项噢');
+          } else {
+            this.$message.error("请填写必填项噢");
           }
         });
-      }else{
+      } else {
         if (this.active++ > 2) this.active = 0;
       }
     },
