@@ -42,10 +42,13 @@
           :model="temp"
           label-position="left"
           label-width="80px"
-          style="width: 400px; margin-left: 50px"
+          style="width: 400px; margin-left: 50px" 
         >
           <el-form-item label="变量名称" prop="name" width="80px">
-            <el-input v-model="temp.name" />
+            <el-input
+              onkeyup="this.value=this.value.match(/\d{0,8}\.?\d{0,2}/);this.dispatchEvent(new Event('input'))  "
+              v-model="temp.name"
+            />
           </el-form-item>
           <el-form-item label="数据来源" prop="source">
             <el-select
@@ -62,7 +65,11 @@
             </el-select>
             <p class="intro">设定变量来源的业务系统数据表</p>
           </el-form-item>
-          <el-form-item label="表名称" prop="type" v-if="this.temp.source != ''">
+          <el-form-item
+            label="表名称"
+            prop="type"
+            v-if="this.temp.source != ''"
+          >
             <el-select
               v-model="temp.type"
               class="filter-item"
@@ -411,6 +418,7 @@ export default {
       },
     ];
     return {
+      nub1:"8",
       treeData1: [
         {
           name: "商户名称",
@@ -471,19 +479,19 @@ export default {
         time: "",
       },
       varType: ["客户信息", "商户信息", "终端信息"],
-      sourceList:[
+      sourceList: [
         {
-          value:"1",
-          name:"来源1"
+          value: "1",
+          name: "来源1",
         },
         {
-          value:"2",
-          name:"来源2"
+          value: "2",
+          name: "来源2",
         },
         {
-          value:"3",
-          name:"来源3"
-        }
+          value: "3",
+          name: "来源3",
+        },
       ],
       zdList: [
         {
@@ -688,6 +696,13 @@ export default {
     this.temp.time = this.timeList[0].value;
   },
   methods: {
+    nub(val){
+     
+    },
+    // 正则筛选输入框
+    handleInput(value) {
+      console.log(value);
+    },
     // 测试拖拽
     returnTrue(draggingNode, dropNode, type) {},
     returnFalse() {
@@ -935,6 +950,7 @@ export default {
           if (valid) {
             this.$refs["dataForm1"].validate((valid) => {
               if (valid) {
+                console.log(this.temp, "111");
                 if (this.active++ > 2) this.active = 0;
               } else {
                 this.$message.error("请填写必填项噢");
